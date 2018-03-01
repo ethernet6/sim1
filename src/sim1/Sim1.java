@@ -19,123 +19,131 @@ public class Sim1 {
     public static void main(String[] args) {
         // TODO code application logic here
 
-        int group_size = 21;
-
-        Student[] group_project = new Student[group_size];
-        //Student[] group_project1 = new Student[group_size];
+        int size = 5;
+        
         Random rand = new Random();
-
-        double lazy_s = 0.51;
-        double hard_s = 0.75;
-
+        
+        double lazy_s = 0.5;
+        double hard_s = 0.7;
+        
         int no_lazy_workers = 0;
         int no_hard_workers = 0;
-        for (int v = 0; v < group_size; v++) {
+        int nog = 2;
+        Group[] gp1 = new Group[nog];
+        for (int b = 0; b < nog; b++) {
 
-            Student s1 = new Student();
-            
+            Group g1 = new Group(size);
+            gp1[b] = g1;
 
-            // random numbers 0 to 1 exclu. 2
-            int n = rand.nextInt(2);
-            int n2 = rand.nextInt(2);
-
-            s1.lazy = n;
-             
-
-            if (s1.lazy == 1) {
-                s1.effort = lazy_s;
+            for (int a = 0; a < size; a++) {
+                Student s1 = new Student();
                 
-                no_lazy_workers++;
-            }
-            if (s1.lazy == 0) {
-                s1.effort = hard_s;
-                
-                no_hard_workers++;
-            }
 
-            group_project[v] = s1;
+                int n = rand.nextInt(2);
+                //int n2 = rand.nextInt(2);
+
+                s1.lazy = n;
+
+                if (s1.lazy == 1) {
+                    s1.effort = lazy_s;
+                   
+                    no_lazy_workers++;
+                }
+                if (s1.lazy == 0) {
+                    s1.effort = hard_s;
+                    
+                    no_hard_workers++;
+                }
+                
+                g1.s1[a] = s1;
+            }
+g1.hw = no_hard_workers;
+ g1.sw = no_lazy_workers;
+ 
+ System.out.println("Group No. [" + (b) + "]" );
+            System.out.println("L: " + gp1[b].sw);
+            System.out.println("H: " + gp1[b].hw);
+            no_lazy_workers = 0;
+        no_hard_workers = 0;
         }
+        
         System.out.println("Level 0 ");
         System.out.println("LZ: " + no_lazy_workers);
         System.out.println("HD: " + no_hard_workers);
-        int sims = 15;
+        System.out.println("00 " + nog);
+        int sims = 12;
         SimStat[] stats = new SimStat[sims];
+        
+        double alpha = 1.0;
+        double measure;
+        
+        // numbers of groups
+        for (int q = 0; q < nog; q++) {
 
-        for (int a = 0; a < sims; a++) {
-            //System.out.println("Group formed, size: " + group_size);
-            //System.out.println("H: 0.85,  L: 0.5");
-            //System.out.println("Lazy STU " + no_lazy_workers);
-            //System.out.println("HARD STU " + no_hard_workers);
-            double group_effort = (no_hard_workers * hard_s) + (no_lazy_workers * lazy_s);
-            //System.out.println("Effort: " + group_effort);
-            double group_mark = group_effort / group_size;
-            //System.out.println("Mark: " + group_mark);
-            double alpha = 0.1;
-            //System.out.println("Alpha: " + alpha);
+            double group_effort = (gp1[q].hw* hard_s) + (gp1[q].sw * lazy_s);
+            //System.out.println("gh "+ group_effort);
+            double group_mark = group_effort / size;
+            gp1[q].ge = group_effort;
+            gp1[q].gm = group_mark;
+            
+            // students in group
+            for (int a = 0; a < size; a++) {
 
-            int l2 = 0;
-            int h2 = 0;
-            l2 = no_lazy_workers;
-            h2 = no_hard_workers;
+                measure = group_mark - (alpha * gp1[q].s1[a].effort);
+                gp1[q].s1[a].measure = measure;
 
-            //System.out.println("Measure: (Lower is better)");
-            // collective drag
-            double total_m = 0;
-            for (int v = 0; v < group_size; v++) {
-                
-                
-
-                // group effort
-                //System.out.println(group_project[v].effort);
-                double measure = group_mark - (alpha * group_project[v].effort);
-                group_project[v].measure = measure;
-                //System.out.println("stat: " + (v + 1) + " UMS: " + measure);
-                total_m = measure + total_m;
             }
+        }
+        int changes = 0;
+        for (int y = 0; y < (nog * size); y++) {
+            int q = rand.nextInt(nog);
+            int a = rand.nextInt(size);
 
-            //System.out.println("New Effort Stats");
-            no_lazy_workers = 0;
-            no_hard_workers = 0;
+            int q1 = rand.nextInt(nog);
+            int a1 = rand.nextInt(size);
+            //System.out.println("acc " + q + "," + a);
+            if (gp1[q].s1[a].measure > gp1[q1].s1[a1].measure) {
 
-            int changes = 0;
-//            for (int w = 0; w < group_size; w++) {
-//
-//                // check measure
-//                int n = rand.nextInt(group_size - 1);
-//                int v = rand.nextInt(group_size - 1);
-//                
-//                if(group_project[v].measure < group_project[n].measure){
-//                
-//                    group_project[v].effort = group_project[n].effort;
-//                }
-//                
-//                //System.out.println(group_project[v].effort);
-//
-//                if (group_project[w].effort == lazy_s) {
-//                    no_lazy_workers++;
-//
-//                }
-//                if (group_project[w].effort == hard_s) {
-//                    no_hard_workers++;
-//
-//                }
-//            }
-            //System.out.println("Switched " + changes);
-            //System.out.println("");
+                gp1[q].s1[a].effort = gp1[q1].s1[a1].effort;
+                
+                if(lazy_s == gp1[q1].s1[a1].effort){
+                    gp1[q].s1[a].lazy = 1;
+                    gp1[q].s1[a].ch = 1;
+                }
+                //changes++;
+            }
+        }
+         double total_m = 0;
+         int laz = 0;
+         int har = 0;
+        for (int w = 0; w < nog;  w++) {
 
-//            SimStat sim = new SimStat(l2, h2, group_effort, group_mark, total_m, changes);
-//            stats[a] = sim;
+            for (int h = 0; h < size; h++) {
 
-        } //end of sim
+                total_m = gp1[w].s1[h].measure + total_m;
+                System.out.println("g"+h + " "+ gp1[w].s1[h].measure);
+                if(lazy_s == gp1[w].s1[h].effort){
+                    laz++;
+                }
+                if(1 == gp1[w].s1[h].ch){
+                    changes++;
+                }
+            }
+            gp1[w].sw = laz;
+            gp1[w].hw = size - laz;
+            System.out.println("Group No. [" + (w) + "]" );
+            System.out.println("L: " + gp1[w].sw);
+            System.out.println("H: " + gp1[w].hw);
+            System.out.println("GE: " + gp1[w].ge);
+            System.out.println("GM: " + gp1[w].gm);
+            System.out.println("ME: " + total_m);
+            System.out.println("CH: " + changes);
+            total_m = 0;
+            laz = 0;
+            changes = 0;
+        }
+        
 
-//        System.out.println("L H GE GM DRG SWT");
-//        for (int v = 0; v < sims; v++) {
-//
-//            stats[v].printsim();
-//
-//        }
-//        System.out.println((stats[sims - 1].ge / group_size));
-
-    }
+    } // end of main
 
 }

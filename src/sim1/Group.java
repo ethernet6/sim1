@@ -5,21 +5,23 @@
  */
 package sim1;
 
-
 /**
  *
  * @author James
  */
-public class Student {
-   
-    int lazy;
-    double measure;
-    double effort;
-    int ch;
+public class Group {
     
-    Student(){
-    
+    int hw;
+    int sw;
+    double ge;
+    double gm;
+    int max;
+    Student[] s1;
+    Group(int cap){
+        max = cap;
+        s1 = new Student[max];
     }
+    
     
     
 }
