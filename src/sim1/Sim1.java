@@ -28,10 +28,12 @@ public class Sim1 {
         
         int no_lazy_workers = 0;
         int no_hard_workers = 0;
+        // number of groups
         int nog = 2;
+        //Array of Groups - the class as a whole
         Group[] gp1 = new Group[nog];
         for (int b = 0; b < nog; b++) {
-
+        // section of students - the groups
             Group g1 = new Group(size);
             gp1[b] = g1;
 
@@ -84,12 +86,12 @@ g1.hw = no_hard_workers;
             //System.out.println("gh "+ group_effort);
             double group_mark = group_effort / size;
             gp1[q].ge = group_effort;
-            gp1[q].gm = group_mark;
+            gp1[q].gm = group_mark*100;
             
             // students in group
             for (int a = 0; a < size; a++) {
 
-                measure = group_mark - (alpha * gp1[q].s1[a].effort);
+                measure = gp1[q].gm - (alpha * gp1[q].s1[a].effort);
                 gp1[q].s1[a].measure = measure;
 
             }
@@ -104,11 +106,11 @@ g1.hw = no_hard_workers;
             //System.out.println("acc " + q + "," + a);
             if (gp1[q].s1[a].measure > gp1[q1].s1[a1].measure) {
 
-                gp1[q].s1[a].effort = gp1[q1].s1[a1].effort;
+                gp1[q1].s1[a1].effort = gp1[q].s1[a].effort;
                 
-                if(lazy_s == gp1[q1].s1[a1].effort){
-                    gp1[q].s1[a].lazy = 1;
-                    gp1[q].s1[a].ch = 1;
+                if(lazy_s == gp1[q].s1[a].effort){
+                    gp1[q1].s1[a1].lazy = 1;
+                    gp1[q1].s1[a1].ch = 1;
                 }
                 //changes++;
             }
@@ -136,7 +138,7 @@ g1.hw = no_hard_workers;
             System.out.println("H: " + gp1[w].hw);
             System.out.println("GE: " + gp1[w].ge);
             System.out.println("GM: " + gp1[w].gm);
-            System.out.println("ME: " + total_m);
+            System.out.println("Measure: " + total_m/100);
             System.out.println("CH: " + changes);
             total_m = 0;
             laz = 0;
