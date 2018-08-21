@@ -5,13 +5,14 @@
  */
 package sim1;
 
+import static java.lang.Math.exp;
 import java.util.*;
 
 /**
  *
  * @author James
  */
-public class draft {
+public class draft2 {
 
     public static void main(String[] args) {
 
@@ -19,7 +20,7 @@ public class draft {
 
         Random rand = new Random();
         // strategy paramters
-        double lazy = 0.4;
+        double lazy = 0.0;
         double hard = 1.0;
         
         int lazy_workers = 0;
@@ -29,6 +30,22 @@ public class draft {
         
         Group[] collection = new Group[no_of_groups];
         
+        // expo timer
+        
+        double tock = 0.1;
+        
+        // expo function
+        double min = 0.1;
+        double max = 1.0;
+        
+        double alarm = -1;
+        
+        double y2 = 1;
+        
+        
+        // end of new
+        
+        
         for (int b = 0; b < no_of_groups; b++) {
         Group g1 = new Group(group_size);
             collection[b] = g1;
@@ -36,11 +53,14 @@ public class draft {
             for (int a = 0; a < group_size; a++) {
                 Student s1 = new Student();
                 //int n = rand.nextInt(2);
-                if(a < 25){
+                Random r = new Random();
+                s1.r = r;
+                
+                if(a < -5){
                     int n=1;
                     s1.lazy = n;}
                 
-                if(a > 24){
+                if(a > -1){
                     int n=0;
                     s1.lazy = n;}
                 //s1.lazy = n;    
@@ -99,6 +119,36 @@ public class draft {
         
         // group project over
         
+        
+        
+        
+        //double tick = min + (max - min) * r.nextDouble();
+        
+        double[][] timer_p = new double[no_of_groups][group_size];
+        for(int k =0; k< no_of_groups; k++){
+        
+            for(int h=0; h< group_size;  h++){
+                double tick = min + (max - min) * collection[k].s1[h].r.nextDouble();
+            timer_p[k][h] = tick;
+            
+            y2 = exp(-v*tick);
+            
+            if(y2< 0.1){
+                //System.out.println("KEN");
+                int q = rand.nextInt(no_of_groups);
+            int a = rand.nextInt(group_size);
+                    if(collection[q].s1[a].effort == lazy){
+                    collection[k].s1[h].effort = lazy;
+                    }
+                    
+                    if(collection[q].s1[a].effort == hard){
+                        collection[k].s1[h].effort = lazy;
+                    }
+                }
+            }
+        }
+        
+        //y2 = exp(-tick);
         // start project lookup
         
         int[][] lookup = new int[no_of_groups][group_size];
@@ -123,7 +173,7 @@ public class draft {
             int a1 = rand.nextInt(group_size);
             
             
-            
+            // compare measure 
             if (collection[q].s1[a].measure > collection[q1].s1[a1].measure) {
 
                 //System.out.println("big :" + collection[q].s1[a].measure);
@@ -132,7 +182,7 @@ public class draft {
                 
                 //lookup[q][a] = 1;
             lookup[q1][a1] = 1;
-                collection[q1].s1[a1].effort = collection[q].s1[a].effort;
+                //OLD //collection[q1].s1[a1].effort = collection[q].s1[a].effort;
                 if(lazy == collection[q].s1[a].effort){
                     
                     
@@ -198,8 +248,12 @@ public class draft {
                 }
             }
             //park
-                System.out.println(collection[w].ge);
+                //System.out.println(collection[w].ge);
             //System.out.println(collection[w].ge + ","+ collection[w].gm+","+collection[w].sw+","+collection[w].hw+','+lazyco+','+hardco);
+            System.out.print(lazyco+" ");
+            System.out.println(hardco);
+            System.out.println("");
+            
 //            System.out.println("Group Mark: " + collection[w].gm);
 //            System.out.println("POST----");
 //            System.out.println("L: " + collection[w].sw);

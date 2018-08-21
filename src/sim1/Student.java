@@ -5,6 +5,8 @@
  */
 package sim1;
 
+import java.util.Random;
+
 
 /**
  *
@@ -20,6 +22,12 @@ public class Student {
     Student(){
     
     }
+    
+    
+    double min = 0.1;
+        double max = 1.0;
+        double alarm = -1;
+        Random r ;
     
     
 }
